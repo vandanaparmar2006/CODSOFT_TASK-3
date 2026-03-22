@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> Windows Calculator</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: serif, sans-serif;
+}
+
+body {
+    height: 120vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #b57c7c;
+}
+
+.calculator {
+    background: #2d2d30;
+    padding: 30px;
+    border-radius: 25px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    width: 340px;
+}
+
+.display {
+    height: 80px;
+    background: #3a3a3d;
+    border-radius: 15px;
+    text-align: right;
+    padding: 20px;
+    font-size: 32px;
+    color: white;
+    margin-bottom: 20px;
+    overflow-x: auto;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+button {
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.number {
+    background: #3a3a3d;
+    color: white;
+}
+
+.number:hover {
+    background: #4a4a4d;
+}
+
+.operator {
+    background: #a7314d;
+    color: white;
+}
+
+.operator:hover {
+    background: #0060df;
+}
+
+.equal {
+    background: #111813;
+    color: white;
+    grid-row: span 2;
+}
+
+.equal:hover {
+    background: #0090ff;
+}
+
+.clear {
+    background: #f80202;
+    color: white;
+}
+
+.clear:hover {
+    background: #a30000;
+}
+
+.zero {
+    grid-column: span 2;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+</style>
+</head>
+
+<body>
+
+<div class="calculator">
+    <div class="display" id="display">0</div>
+
+    <div class="buttons">
+        <button class="clear">C</button>
+        <button class="operator">/</button>
+        <button class="operator">*</button>
+        <button class="operator">-</button>
+
+        <button class="number">7</button>
+        <button class="number">8</button>
+        <button class="number">9</button>
+        <button class="operator">+</button>
+
+        <button class="number">4</button>
+        <button class="number">5</button>
+        <button class="number">6</button>
+        <button class="equal">=</button>
+
+        <button class="number">1</button>
+        <button class="number">2</button>
+        <button class="number">3</button>
+
+        <button class="number zero">0</button>
+        <button class="number">.</button>
+    </div>
+</div>
+
+<script>
+const display = document.getElementById("display");
+const clickSound = document.getElementById("clickSound");
+let currentInput = "";
+
+// Keyboard Support
+document.addEventListener("keydown", (event) => {
+    const key = event.key;
+
+    if (!isNaN(key) || key === "." || key === "+" || key === "-" || key === "*" || key === "/") {
+        playSound();
+        handleInput(key);
+    }
+    else if (key === "Enter") {
+        playSound();
+        handleInput("=");
+    }
+    else if (key === "Backspace") {
+        playSound();
+        currentInput = currentInput.slice(0, -1);
+        display.textContent = currentInput || "0";
+    }
+    else if (key === "Escape") {
+        playSound();
+        handleInput("C");
+    }
+});
+
+function handleInput(value) {
+    if (value === "C") {
+        currentInput = "";
+        display.textContent = "0";
+    }
+    else if (value === "=") {
+        try {
+            currentInput = eval(currentInput);
+            display.textContent = currentInput;
+        } catch {
+            display.textContent = "Error";
+            currentInput = "";
+        }
+    }
+    else {
+        currentInput += value;
+        display.textContent = currentInput;
+    }
+}
+</script>
+
+</body>
+</html>
