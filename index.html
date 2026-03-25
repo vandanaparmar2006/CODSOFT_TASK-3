@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> Windows Calculator</title>
+<title>Windows Calculator</title>
 
 <style>
 * {
@@ -14,7 +14,7 @@
 }
 
 body {
-    height: 120vh;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -135,40 +135,47 @@ button:active {
 
 <script>
 const display = document.getElementById("display");
-const clickSound = document.getElementById("clickSound");
 let currentInput = "";
 
-// Keyboard Support
+// 🔥 BUTTON CLICK WORK (FIX)
+document.querySelectorAll("button").forEach(button => {
+    button.addEventListener("click", () => {
+        const value = button.textContent;
+        handleInput(value);
+    });
+});
+
+// 🔥 KEYBOARD SUPPORT
 document.addEventListener("keydown", (event) => {
     const key = event.key;
 
-    if (!isNaN(key) || key === "." || key === "+" || key === "-" || key === "*" || key === "/") {
-        playSound();
+    if (!isNaN(key) || "+-*/.".includes(key)) {
         handleInput(key);
     }
     else if (key === "Enter") {
-        playSound();
         handleInput("=");
     }
     else if (key === "Backspace") {
-        playSound();
         currentInput = currentInput.slice(0, -1);
         display.textContent = currentInput || "0";
     }
     else if (key === "Escape") {
-        playSound();
         handleInput("C");
     }
 });
 
+// 🔥 MAIN FUNCTION
 function handleInput(value) {
+
+    const operators = ["+", "-", "*", "/"];
+
     if (value === "C") {
         currentInput = "";
         display.textContent = "0";
     }
     else if (value === "=") {
         try {
-            currentInput = eval(currentInput);
+            currentInput = Function("return " + currentInput)();
             display.textContent = currentInput;
         } catch {
             display.textContent = "Error";
@@ -176,6 +183,11 @@ function handleInput(value) {
         }
     }
     else {
+        // prevent double operators
+        if (operators.includes(value) && operators.includes(currentInput.slice(-1))) {
+            return;
+        }
+
         currentInput += value;
         display.textContent = currentInput;
     }
